@@ -22,14 +22,8 @@ class Settings:
     DEBUG = bool(getenv("DEBUG", default=False))
     WORKDIR = Path(getenv("WORKDIR", default="/data")).resolve()
     PROTONVPN_VERSION = getenv("PROTONVPN_APP_VERSION", default="4.4.4")
-    PROTONVPN_APP_VERSION = getenv(
-        "PROTONVPN_APP_VERSION", default=f"LinuxVPN_{PROTONVPN_VERSION}"
-    )
-    USER_AGENT = getenv(
-        "USER_AGENT",
-        default=(
-            f"ProtonVPN/{PROTONVPN_VERSION} "
-            f"(Linux; {distro.name()}/{distro.version()})"
-        ),
+    PROTONVPN_APP_VERSION = f"LinuxVPN_{PROTONVPN_VERSION}"
+    USER_AGENT = (
+        f"ProtonVPN/{PROTONVPN_VERSION} (Linux; {distro.name()}/{distro.version()})"
     )
     WIREGUARD_PORT = int(getenv("WIREGUARD_PORT", default=51820))

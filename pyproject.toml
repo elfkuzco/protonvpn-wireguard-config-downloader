@@ -21,6 +21,7 @@ license = {text = "GPL-3.0-or-later"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
 ]
 
@@ -34,19 +35,19 @@ scripts = [
   "invoke==2.2.0",
 ]
 lint = [
-  "black==24.1.1",
-  "ruff==0.2.0",
+  "black==24.4.2",
+  "ruff==0.5.1",
 ]
 check = [
-  "pyright==1.1.349",
+  "pyright==1.1.370",
 ]
 test = [
-  "pytest==8.0.0",
-  "coverage==7.4.1",
+  "pytest==8.2.2",
+  "coverage==7.5.4",
 ]
 dev = [
-  "pre-commit==3.6.0",
-  "debugpy==1.8.0",
+  "pre-commit==3.7.1",
+  "debugpy==1.8.2",
   "protonvpn_wireguard_config_downloader[scripts]",
   "protonvpn_wireguard_config_downloader[lint]",
   "protonvpn_wireguard_config_downloader[test]",

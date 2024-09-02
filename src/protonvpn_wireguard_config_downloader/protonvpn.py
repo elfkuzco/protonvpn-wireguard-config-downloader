@@ -33,11 +33,6 @@ async def logout(session: VPNSession) -> None:
         await session.async_logout()
 
 
-def wireguard_port_is_available(session: VPNSession, port: int) -> bool:
-    """Check that the wireguard port is available in the client config."""
-    return port in session.client_config.wireguard_ports.udp
-
-
 def vpn_servers(
     session: VPNSession,
     wireguard_port: int,
@@ -51,6 +46,8 @@ def vpn_servers(
     if wireguard_port not in client_config.wireguard_ports.udp:
         raise ValueError(f"Port {wireguard_port} is not available in client config.")
 
+    # Build up the list of servers, filtering out disabled servers and
+    # servers that are above the client's tier.
     logical_servers = (
         server
         for server in session.server_list.logicals
