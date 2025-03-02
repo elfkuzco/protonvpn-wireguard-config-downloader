@@ -19,5 +19,5 @@ This script is intended to be used in Linux environments only.
     ```
 - Download the configuration files
     ```sh
-    docker run --rm -e USERNAME=abcd@efg -e PASSWORD=pa55word -v ./proton:/data protonvpn-wireguard-config-downloader protonvpn-wireguard-configs
+    docker run --rm -it -e USERNAME=abcd@efg -e PASSWORD=pa55word -v ./proton:/data protonvpn-wireguard-config-downloader protonvpn-wireguard-configs
     ```
