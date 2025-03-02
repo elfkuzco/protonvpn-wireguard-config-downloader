@@ -1,5 +1,5 @@
 FROM python:3.11-slim-bookworm
-LABEL org.opencontainers.image.source=https://github.com/kiwix/mirrors-qa
+LABEL org.opencontainers.image.source=https://github.com/elfkuzco/protonvpn-wireguard-config-downloader
 
 # We need gnupg2 for python-gnupg used in Proton libraries to work properly.
 RUN apt-get update && apt-get install -y gnupg2

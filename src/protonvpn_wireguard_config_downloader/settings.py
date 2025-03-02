@@ -15,8 +15,6 @@ def getenv(key: str, *, mandatory: bool = False, default: Any = None) -> Any:
 
 
 class Settings:
-    """Task worker configuration"""
-
     USERNAME = getenv("USERNAME", mandatory=True)
     PASSWORD = getenv("PASSWORD", mandatory=True)
     DEBUG = bool(getenv("DEBUG", default=False))

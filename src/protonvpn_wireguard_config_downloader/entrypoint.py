@@ -24,9 +24,7 @@ async def download_vpn_wireguard_configs(
         for vpn_server in vpn_servers(session, wireguard_port):
             save_vpn_server_wireguard_config(session, vpn_server, work_dir)
     finally:
-        logger.debug("Logging out...")
         await logout(session)
-        logger.info("Successfully logged out client.")
 
 
 def main():

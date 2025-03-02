@@ -1,12 +1,15 @@
-# pyright: strict, reportMissingTypeStubs=false, reportUnknownMemberType=false, reportOptionalSubscript=false, reportUnknownVariableType=false, reportUnknownArgumentType=false
 from collections.abc import Generator
 from pathlib import Path
 from typing import cast
 
-from proton.sso import ProtonSSO
-from proton.vpn.connection.vpnconfiguration import WireguardConfig
-from proton.vpn.core.connection import VPNServer
-from proton.vpn.session import VPNSession
+from proton.sso import ProtonSSO  # pyright: ignore[reportMissingTypeStubs]
+from proton.vpn.connection.vpnconfiguration import (  # pyright: ignore[reportMissingTypeStubs]
+    WireguardConfig,
+)
+from proton.vpn.core.connection import (  # pyright: ignore[reportMissingTypeStubs]
+    VPNServer,
+)
+from proton.vpn.session import VPNSession  # pyright: ignore[reportMissingTypeStubs]
 
 from protonvpn_wireguard_config_downloader import logger
 from protonvpn_wireguard_config_downloader.settings import Settings
@@ -14,15 +17,15 @@ from protonvpn_wireguard_config_downloader.settings import Settings
 
 async def login(username: str, password: str) -> VPNSession:
     """Log in to Proton VPN account."""
-    logger.info("Logging in to ProtonVPN...")
+    logger.debug("Logging in to ProtonVPN...")
     sso = ProtonSSO(
         user_agent=Settings.USER_AGENT, appversion=Settings.PROTONVPN_APP_VERSION
     )
     session = cast(VPNSession, sso.get_session(username, override_class=VPNSession))
     logger.debug("Authenticating credentials with ProtonVPN.")
-    await session.async_authenticate(username, password)
+    await session.async_authenticate(username, password)  # pyright: ignore[reportUnknownMemberType, reportArgumentType]
     logger.debug("Fetching client session data.")
-    await session.fetch_session_data()
+    await session.fetch_session_data()  # pyright: ignore[reportUnknownMemberType]
     logger.info("Logged in to ProtonVPN.")
     return session
 
@@ -30,7 +33,9 @@ async def login(username: str, password: str) -> VPNSession:
 async def logout(session: VPNSession) -> None:
     """Log out from the Proton VPN account."""
     if session.authenticated:
-        await session.async_logout()
+        logger.debug("Logging out...")
+        await session.async_logout()  # pyright: ignore[reportUnknownMemberType]
+    logger.info("Logged out from ProtonVPN.")
 
 
 def vpn_servers(
@@ -43,7 +48,7 @@ def vpn_servers(
         ValueError: Specified wireguard port is not available for this client.
     """
     client_config = session.client_config
-    if wireguard_port not in client_config.wireguard_ports.udp:
+    if wireguard_port not in client_config.wireguard_ports.udp:  # pyright: ignore[reportUnknownMemberType]
         raise ValueError(f"Port {wireguard_port} is not available in client config.")
 
     # Build up the list of servers, filtering out disabled servers and
@@ -58,12 +63,10 @@ def vpn_servers(
             server_ip=physical_server.entry_ip,
             domain=physical_server.domain,
             x25519pk=physical_server.x25519_pk,
-            openvpn_ports=client_config.openvpn_ports,
-            wireguard_ports=[
-                wireguard_port
-            ],  # pyright: ignore[reportGeneralTypeIssues, reportArgumentType]
+            openvpn_ports=client_config.openvpn_ports,  # pyright: ignore[reportArgumentType, reportUnknownArgumentType]
+            wireguard_ports=[wireguard_port],  # pyright: ignore[reportGeneralTypeIssues, reportArgumentType]
             server_id=logical_server.id,
-            server_name=f"{logical_server.exit_country.lower()}-{logical_server.name}",
+            server_name=f"{logical_server.entry_country.lower()}-{logical_server.name}",
             label=physical_server.label,
         )
         for logical_server in logical_servers
