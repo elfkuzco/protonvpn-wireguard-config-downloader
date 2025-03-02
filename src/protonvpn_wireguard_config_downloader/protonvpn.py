@@ -12,6 +12,9 @@ from proton.vpn.core.connection import (  # pyright: ignore[reportMissingTypeStu
 from proton.vpn.session import VPNSession  # pyright: ignore[reportMissingTypeStubs]
 
 from protonvpn_wireguard_config_downloader import logger
+from protonvpn_wireguard_config_downloader.exceptions import (
+    ProtonVPNAuthenticationError,
+)
 from protonvpn_wireguard_config_downloader.settings import Settings
 
 
@@ -23,7 +26,20 @@ async def login(username: str, password: str) -> VPNSession:
     )
     session = cast(VPNSession, sso.get_session(username, override_class=VPNSession))
     logger.debug("Authenticating credentials with ProtonVPN.")
-    await session.async_authenticate(username, password)  # pyright: ignore[reportUnknownMemberType, reportArgumentType]
+    login_result = await session.login(username, password)  # pyright: ignore[reportUnknownMemberType, reportArgumentType]
+    if not login_result.authenticated:
+        raise ProtonVPNAuthenticationError("Authentication credentials are invalid.")
+
+    if login_result.twofa_required:
+        twofa_code = input("Enter 2FA code for account: ")
+        logger.debug("Verifying 2FA code...")
+        login_result = await session.provide_2fa(twofa_code)
+        if login_result.twofa_required:
+            raise ProtonVPNAuthenticationError("Invalid 2FA code.")
+
+    if not login_result.success:
+        raise ProtonVPNAuthenticationError("Unable to authenticate with ProtonVPN.")
+
     logger.debug("Fetching client session data.")
     await session.fetch_session_data()  # pyright: ignore[reportUnknownMemberType]
     logger.info("Logged in to ProtonVPN.")
