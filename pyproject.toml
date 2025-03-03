@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "protonvpn_wireguard_config_downloader"
+name = "protonvpn-wireguard-config-downloader"
 requires-python = ">=3.11,<3.13"
 description = "ProtonVPN Wireguard Configuration Files Downloader"
 readme = "README.md"
@@ -35,11 +35,10 @@ scripts = [
   "invoke==2.2.0",
 ]
 lint = [
-  "black==24.4.2",
-  "ruff==0.5.1",
+  "ruff==0.9.9",
 ]
 check = [
-  "pyright==1.1.370",
+  "pyright==1.1.394",
 ]
 test = [
   "pytest==8.2.2",
@@ -48,10 +47,10 @@ test = [
 dev = [
   "pre-commit==3.7.1",
   "debugpy==1.8.2",
-  "protonvpn_wireguard_config_downloader[scripts]",
-  "protonvpn_wireguard_config_downloader[lint]",
-  "protonvpn_wireguard_config_downloader[test]",
-  "protonvpn_wireguard_config_downloader[check]",
+  "protonvpn-wireguard-config-downloader[scripts]",
+  "protonvpn-wireguard-config-downloader[lint]",
+  "protonvpn-wireguard-config-downloader[test]",
+  "protonvpn-wireguard-config-downloader[check]",
 ]
 
 [project.scripts]
@@ -91,10 +90,8 @@ skip-install = false
 features = ["scripts", "lint"]
 
 [tool.hatch.envs.lint.scripts]
-black = "inv lint-black --args '{args}'"
 ruff = "inv lint-ruff --args '{args}'"
 all = "inv lintall --args '{args}'"
-fix-black = "inv fix-black --args '{args}'"
 fix-ruff = "inv fix-ruff --args '{args}'"
 fixall = "inv fixall --args '{args}'"
 
@@ -104,10 +101,6 @@ features = ["scripts", "check"]
 [tool.hatch.envs.check.scripts]
 pyright = "inv check-pyright --args '{args}'"
 all = "inv checkall --args '{args}'"
-
-[tool.black]
-line-length = 88
-target-version = ['py311']
 
 [tool.ruff]
 target-version = "py311"

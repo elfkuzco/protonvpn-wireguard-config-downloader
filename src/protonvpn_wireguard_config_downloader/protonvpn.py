@@ -20,6 +20,7 @@ from protonvpn_wireguard_config_downloader.settings import Settings
 
 async def login(username: str, password: str) -> VPNSession:
     """Log in to Proton VPN account."""
+
     logger.debug("Logging in to ProtonVPN...")
     sso = ProtonSSO(
         user_agent=Settings.USER_AGENT, appversion=Settings.PROTONVPN_APP_VERSION
@@ -38,7 +39,7 @@ async def login(username: str, password: str) -> VPNSession:
             raise ProtonVPNAuthenticationError("Invalid 2FA code.")
 
     if not login_result.success:
-        raise ProtonVPNAuthenticationError("Unable to authenticate with ProtonVPN.")
+        raise ProtonVPNAuthenticationError("Unable to authenticate to ProtonVPN.")
 
     logger.debug("Fetching client session data.")
     await session.fetch_session_data()  # pyright: ignore[reportUnknownMemberType]
@@ -64,7 +65,9 @@ def vpn_servers(
         ValueError: Specified wireguard port is not available for this client.
     """
     client_config = session.client_config
-    if wireguard_port not in client_config.wireguard_ports.udp:  # pyright: ignore[reportUnknownMemberType]
+    if (
+        wireguard_port not in client_config.wireguard_ports.udp  # pyright: ignore[reportUnknownMemberType]
+    ):  # pyright: ignore[reportUnknownMemberType]
         raise ValueError(f"Port {wireguard_port} is not available in client config.")
 
     # Build up the list of servers, filtering out disabled servers and

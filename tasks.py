@@ -42,13 +42,6 @@ def coverage(ctx: Context, args: str = "", *, html: bool = False):
     report_cov(ctx, html=html)
 
 
-@task(optional=["args"], help={"args": "black additional arguments"})
-def lint_black(ctx: Context, args: str = "."):
-    args = args or "."  # needed for hatch script
-    ctx.run("black --version", pty=use_pty)
-    ctx.run(f"black --check --diff {args}", pty=use_pty)
-
-
 @task(optional=["args"], help={"args": "ruff additional arguments"})
 def lint_ruff(ctx: Context, args: str = "."):
     args = args or "."  # needed for hatch script
@@ -59,13 +52,12 @@ def lint_ruff(ctx: Context, args: str = "."):
 @task(
     optional=["args"],
     help={
-        "args": "linting tools (black, ruff) additional arguments, typically a path",
+        "args": "linting tools (ruff) additional arguments, typically a path",
     },
 )
 def lintall(ctx: Context, args: str = "."):
     """Check linting"""
     args = args or "."  # needed for hatch script
-    lint_black(ctx, args)
     lint_ruff(ctx, args)
 
 
@@ -82,13 +74,6 @@ def checkall(ctx: Context, args: str = ""):
     check_pyright(ctx, args)
 
 
-@task(optional=["args"], help={"args": "black additional arguments"})
-def fix_black(ctx: Context, args: str = "."):
-    """fix black formatting"""
-    args = args or "."  # needed for hatch script
-    ctx.run(f"black {args}", pty=use_pty)
-
-
 @task(optional=["args"], help={"args": "ruff additional arguments"})
 def fix_ruff(ctx: Context, args: str = "."):
     """fix all ruff rules"""
@@ -99,12 +84,11 @@ def fix_ruff(ctx: Context, args: str = "."):
 @task(
     optional=["args"],
     help={
-        "args": "linting tools (black, ruff) additional arguments, typically a path",
+        "args": "linting tools (ruff) additional arguments, typically a path",
     },
 )
 def fixall(ctx: Context, args: str = "."):
     """Fix everything automatically"""
     args = args or "."  # needed for hatch script
-    fix_black(ctx, args)
     fix_ruff(ctx, args)
     lintall(ctx, args)
