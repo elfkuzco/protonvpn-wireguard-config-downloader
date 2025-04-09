@@ -55,7 +55,11 @@ async def logout(session: VPNSession) -> None:
 
 
 def vpn_servers(
-    session: VPNSession, wireguard_port: int, server_features: set[ServerFeatureEnum]
+    *,
+    session: VPNSession,
+    wireguard_port: int,
+    server_features: set[ServerFeatureEnum],
+    threshold: int,
 ) -> Generator[VPNServer, None, None]:
     """Generate the available VPN servers for this account.
 
@@ -68,10 +72,11 @@ def vpn_servers(
     ):  # pyright: ignore[reportUnknownMemberType]
         raise ValueError(f"Port {wireguard_port} is not available in client config.")
 
-    # Build up the list of servers that are
-    # - enabled
-    # - less than or equal to the user tier
+    # Build up the list of servers that:
+    # - are enabled
+    # - are less than or equal to the user tier
     # - have all the specified features
+    # - have scores lower than threshold
     logical_servers = (
         server
         for server in session.server_list.logicals
@@ -79,6 +84,7 @@ def vpn_servers(
         and server.tier <= session.server_list.user_tier
         and len(server_features) <= len(server.features)
         and len(server_features & set(server.features)) == len(server_features)
+        and server.load <= threshold
     )
 
     return (

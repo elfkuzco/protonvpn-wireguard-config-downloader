@@ -28,7 +28,7 @@ class StdoutSaver(VPNServerSaver):
         session: VPNSession,  # noqa: ARG002
         vpn_server: VPNServer,
     ):
-        print(f"{vpn_server.server_name}.conf")  # noqa: T201
+        print(f"{vpn_server.server_name}-{vpn_server.label}.conf")  # noqa: T201
 
 
 class FileSaver(VPNServerSaver):
@@ -43,7 +43,7 @@ class FileSaver(VPNServerSaver):
         config = WireguardConfig(
             vpn_server, session.vpn_account.vpn_credentials, None, use_certificate=True
         )
-        dest_fpath = self.dest_dir / f"{vpn_server.server_name}.conf"
+        dest_fpath = self.dest_dir / f"{vpn_server.server_name}-{vpn_server.label}.conf"
         dest_fpath.write_text(config.generate(), encoding="utf-8")
         logger.info(
             f"Saved configuration file for VPN server: {vpn_server.server_name},  "
