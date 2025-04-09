@@ -20,12 +20,16 @@ classifiers = [
 ]
 
 dynamic = ["version"]
+
 dependencies = [
     "distro==1.9.0",
     "proton-core",
     "proton-vpn-api-core",
     "proton-vpn-logger",
 ]
+
+[tool.setuptools.dynamic]
+version = {attr = "protonvpn_wireguard_config_downloader.__about__.__version__"}
 
 [project.urls]
 Homepage = "https://github.com/elfkuzco/protonvpn-wireguard-config-downloader"
