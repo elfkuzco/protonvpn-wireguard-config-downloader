@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "protonvpn-wireguard-config-downloader"
@@ -11,12 +11,6 @@ authors = [
   { name = "Uchechukwu Orji", email = "orjiuchechukwu52@yahhoo.com" },
 ]
 keywords = ["protonvpn", "wireguard"]
-dependencies = [
-    "proton-core @ https://github.com/ProtonVPN/python-proton-core/archive/refs/tags/v0.2.0.zip",
-    "proton-vpn-logger @ https://github.com/ProtonVPN/python-proton-vpn-logger/archive/refs/tags/v0.2.1.zip",
-    "proton-vpn-api-core @ https://github.com/ProtonVPN/python-proton-vpn-api-core/archive/refs/tags/v0.32.2.zip",
-    "distro==1.9.0"
-]
 license = {text = "GPL-3.0-or-later"}
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -26,81 +20,18 @@ classifiers = [
 ]
 
 dynamic = ["version"]
+dependencies = [
+    "distro==1.9.0",
+    "proton-core",
+    "proton-vpn-api-core",
+    "proton-vpn-logger",
+]
 
 [project.urls]
 Homepage = "https://github.com/elfkuzco/protonvpn-wireguard-config-downloader"
 
-[project.optional-dependencies]
-scripts = [
-  "invoke==2.2.0",
-]
-lint = [
-  "ruff==0.9.9",
-]
-check = [
-  "pyright==1.1.394",
-]
-test = [
-  "pytest==8.2.2",
-  "coverage==7.5.4",
-]
-dev = [
-  "pre-commit==3.7.1",
-  "debugpy==1.8.2",
-  "protonvpn-wireguard-config-downloader[scripts]",
-  "protonvpn-wireguard-config-downloader[lint]",
-  "protonvpn-wireguard-config-downloader[test]",
-  "protonvpn-wireguard-config-downloader[check]",
-]
-
 [project.scripts]
 protonvpn-wireguard-configs = "protonvpn_wireguard_config_downloader.entrypoint:main"
-
-[tool.hatch.version]
-path = "src/protonvpn_wireguard_config_downloader/__about__.py"
-
-[tool.hatch.build]
-exclude = [
-  "/.github",
-]
-
-[tool.hatch.metadata]
-allow-direct-references = true
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/protonvpn_wireguard_config_downloader"]
-
-[tool.hatch.envs.default]
-features = ["dev"]
-
-[tool.hatch.envs.test]
-features = ["scripts", "test"]
-
-
-[tool.hatch.envs.test.scripts]
-run = "inv test --args '{args}'"
-run-cov = "inv test-cov --args '{args}'"
-report-cov = "inv report-cov"
-coverage = "inv coverage --args '{args}'"
-html = "inv coverage --html --args '{args}'"
-
-[tool.hatch.envs.lint]
-template = "lint"
-skip-install = false
-features = ["scripts", "lint"]
-
-[tool.hatch.envs.lint.scripts]
-ruff = "inv lint-ruff --args '{args}'"
-all = "inv lintall --args '{args}'"
-fix-ruff = "inv fix-ruff --args '{args}'"
-fixall = "inv fixall --args '{args}'"
-
-[tool.hatch.envs.check]
-features = ["scripts", "check"]
-
-[tool.hatch.envs.check.scripts]
-pyright = "inv check-pyright --args '{args}'"
-all = "inv checkall --args '{args}'"
 
 [tool.ruff]
 target-version = "py311"
@@ -187,10 +118,6 @@ unfixable = [
 [tool.ruff.lint.isort]
 known-first-party = ["protonvpn_wireguard_config_downloader"]
 
-[tool.ruff.lint.flake8-bugbear]
-# add exceptions to B008 for fastapi.
-extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
-
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
 
@@ -223,9 +150,20 @@ exclude_lines = [
 ]
 
 [tool.pyright]
-include = ["src", "tests", "tasks.py"]
+include = ["src", "tests"]
 exclude = [".env/**", ".venv/**"]
 extraPaths = ["src"]
 pythonVersion = "3.11"
 typeCheckingMode="strict"
 disableBytesTypePromotions = true
+
+[tool.uv.sources]
+proton-core = { url = "https://github.com/ProtonVPN/python-proton-core/archive/refs/tags/v0.2.0.zip" }
+proton-vpn-logger = { url = "https://github.com/ProtonVPN/python-proton-vpn-logger/archive/refs/tags/v0.2.1.zip" }
+proton-vpn-api-core = { url = "https://github.com/ProtonVPN/python-proton-vpn-api-core/archive/refs/tags/v0.32.2.zip" }
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.398",
+    "ruff>=0.11.4",
+]
