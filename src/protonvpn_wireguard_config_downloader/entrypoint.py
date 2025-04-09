@@ -103,7 +103,7 @@ def main():
     parser.add_argument(
         "--threshold",
         help=(
-            "Select only servers whose that are below the score. (1-100). "
+            "Select only servers whose load are below the score. (1-100). "
             "The lower the number is the better is for establishing a connection."
         ),
         type=parse_threshold,
