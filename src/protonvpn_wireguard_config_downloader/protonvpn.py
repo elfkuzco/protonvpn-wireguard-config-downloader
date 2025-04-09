@@ -1,11 +1,7 @@
 from collections.abc import Generator
-from pathlib import Path
 from typing import cast
 
 from proton.sso import ProtonSSO  # pyright: ignore[reportMissingTypeStubs]
-from proton.vpn.connection.vpnconfiguration import (  # pyright: ignore[reportMissingTypeStubs]
-    WireguardConfig,
-)
 from proton.vpn.core.connection import (  # pyright: ignore[reportMissingTypeStubs]
     VPNServer,
 )
@@ -91,20 +87,3 @@ def vpn_servers(
         for logical_server in logical_servers
         for physical_server in logical_server.physical_servers
     )
-
-
-def save_vpn_server_wireguard_config(
-    session: VPNSession, vpn_server: VPNServer, dest_dir: Path
-) -> Path:
-    """Save the Wireguard config for the VPN server."""
-    logger.debug(f"Saving configuration file for VPN server: {vpn_server.server_name}")
-    config = WireguardConfig(
-        vpn_server, session.vpn_account.vpn_credentials, None, use_certificate=True
-    )
-    dest_fpath = dest_dir / f"{vpn_server.server_name}.conf"
-    dest_fpath.write_text(config.generate(), encoding="utf-8")
-    logger.info(
-        f"Saved configuration file for VPN server: {vpn_server.server_name},  "
-        f"name: {dest_fpath.name}"
-    )
-    return dest_fpath
