@@ -6,6 +6,9 @@ from proton.vpn.core.connection import (  # pyright: ignore[reportMissingTypeStu
     VPNServer,
 )
 from proton.vpn.session import VPNSession  # pyright: ignore[reportMissingTypeStubs]
+from proton.vpn.session.servers.types import (  # pyright: ignore[reportMissingTypeStubs]
+    ServerFeatureEnum,
+)
 
 from protonvpn_wireguard_config_downloader import logger
 from protonvpn_wireguard_config_downloader.exceptions import (
@@ -52,8 +55,7 @@ async def logout(session: VPNSession) -> None:
 
 
 def vpn_servers(
-    session: VPNSession,
-    wireguard_port: int,
+    session: VPNSession, wireguard_port: int, server_features: set[ServerFeatureEnum]
 ) -> Generator[VPNServer, None, None]:
     """Generate the available VPN servers for this account.
 
@@ -66,13 +68,19 @@ def vpn_servers(
     ):  # pyright: ignore[reportUnknownMemberType]
         raise ValueError(f"Port {wireguard_port} is not available in client config.")
 
-    # Build up the list of servers, filtering out disabled servers and
-    # servers that are above the client's tier.
+    # Build up the list of servers that are
+    # - enabled
+    # - less than or equal to the user tier
+    # - have all the specified features
     logical_servers = (
         server
         for server in session.server_list.logicals
-        if server.enabled and server.tier <= session.server_list.user_tier
+        if server.enabled
+        and server.tier <= session.server_list.user_tier
+        and len(server_features) <= len(server.features)
+        and len(server_features & set(server.features)) == len(server_features)
     )
+
     return (
         VPNServer(
             server_ip=physical_server.entry_ip,
